@@ -1,4 +1,3 @@
-# pyright: reportOptionalMemberAccess=false
 from dataclasses import dataclass
 from typing import Any
 
@@ -17,6 +16,7 @@ class CircularDoublyLinkedList:
 
     @property
     def current_data(self) -> Any:
+        assert self.current
         return self.current.data
 
     def is_empty(self) -> bool:
@@ -43,6 +43,7 @@ class CircularDoublyLinkedList:
 
     def prepend(self, data: Any) -> None:
         self.ensure_not_empty()
+        assert self.head
         self.head = self.head.prev
 
     def move_forward(self, steps=1) -> None:
