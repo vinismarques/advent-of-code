@@ -2,25 +2,30 @@ from dotenv import load_dotenv
 from utils import get_day_data
 
 
+def find_max_joltage(bank: str, num_batteries: int) -> int:
+    batteries = []
+    start = 0
+
+    for remaining in range(num_batteries, 0, -1):
+        end = len(bank) - remaining + 1
+
+        window = bank[start:end]
+        best_digit = max(window)
+        best_pos = start + window.index(best_digit)
+
+        batteries.append(best_digit)
+        start = best_pos + 1
+
+    return int("".join(batteries))
+
+
 def main(data: str) -> None:
     banks = data.splitlines()
     joltages = []
+
+    total_batteries = 12
     for bank in banks:
-        total_batteries = 12
-
-        batteries = []
-        available_bank = bank
-        valid_last_pos = -total_batteries + 1
-        while len(batteries) < total_batteries:
-            seg = available_bank[:valid_last_pos] if valid_last_pos != 0 else available_bank
-            battery = max(seg)
-            position = available_bank.find(battery)
-            available_bank = available_bank[position + 1 :]
-            valid_last_pos += 1
-            batteries.append(battery)
-
-        battery_joltage = int("".join(batteries))
-        joltages.append(battery_joltage)
+        joltages.append(find_max_joltage(bank, total_batteries))
 
     print(sum(joltages))
 
@@ -29,7 +34,7 @@ if __name__ == "__main__":
     load_dotenv()
 
     data = get_day_data()
-    #     data = """
+    # data = """
     # 987654321111111
     # 811111111111119
     # 234234234234278
