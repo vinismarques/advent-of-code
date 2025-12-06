@@ -4,12 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "advent-of-code-data>=2.1.0",
-    "python-dotenv>=1.2.1",
-]
+dependencies = ["advent-of-code-data>=2.1.0", "python-dotenv>=1.2.1"]
 
 
 [tool.ruff]
 line-length = 120
 target-version = "py314"
+unfixable = ["F401"]
