@@ -149,3 +149,18 @@ def pretty_print(grid, targets: list[tuple] | None = None) -> None:
                 pretty_m[i][j] = "x"
         print("".join(pretty_m[i]))
     print("")
+
+
+def merge_ranges(ranges: list[tuple[int, int]]) -> list[list[int]]:
+    if not ranges:
+        return []
+
+    ranges.sort(key=lambda x: x[0])
+
+    merged = []
+    for r in ranges:
+        if not merged or r[0] > merged[-1][1]:
+            merged.append([*r])
+        else:
+            merged[-1][1] = max(merged[-1][1], r[1])
+    return merged

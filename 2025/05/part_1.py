@@ -1,20 +1,8 @@
+import bisect
+
 from dotenv import load_dotenv
-from utils import get_day_data
-
-
-def merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
-    if not ranges:
-        return []
-
-    ranges.sort(key=lambda x: x[0])
-
-    merged = []
-    for r in ranges:
-        if not merged or r[0] > merged[-1][1]:
-            merged.append([*r])
-        else:
-            merged[-1][1] = max(merged[-1][1], r[1])
-    return merged
+from loguru import logger
+from utils import get_day_data, merge_ranges
 
 
 def main(data: str) -> None:
@@ -26,12 +14,18 @@ def main(data: str) -> None:
     merged_ranges = merge_ranges(fresh_ranges)
     ingredients = {int(i) for i in ingredients_input.splitlines()}
 
+    # Precompute starts for binary search
+    starts = [r[0] for r in merged_ranges]
+
     total_fresh = 0
     for i in ingredients:
-        for r in merged_ranges:
-            if r[0] <= i <= r[1]:
-                total_fresh += 1
-                break
+        idx = bisect.bisect_right(starts, i) - 1
+        if idx < 0:
+            logger.debug(f"Value '{i}' not found")
+
+        if merged_ranges[idx][0] <= i <= merged_ranges[idx][1]:
+            total_fresh += 1
+
     answer = total_fresh
     print(answer)
 

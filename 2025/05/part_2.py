@@ -1,20 +1,5 @@
 from dotenv import load_dotenv
-from utils import get_day_data
-
-
-def merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
-    if not ranges:
-        return []
-
-    ranges.sort(key=lambda x: x[0])
-
-    merged = []
-    for r in ranges:
-        if not merged or r[0] > merged[-1][1]:
-            merged.append([*r])
-        else:
-            merged[-1][1] = max(merged[-1][1], r[1])
-    return merged
+from utils import get_day_data, merge_ranges
 
 
 def main(data: str) -> None:
@@ -26,8 +11,8 @@ def main(data: str) -> None:
     merged_ranges = merge_ranges(fresh_ranges)
 
     total_fresh = 0
-    for range in merged_ranges:
-        total_fresh += (range[1] + 1) - range[0]
+    for r in merged_ranges:
+        total_fresh += (r[1] + 1) - r[0]
     answer = total_fresh
     print(answer)
 
