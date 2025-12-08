@@ -1,4 +1,3 @@
-import re
 from functools import reduce
 from operator import add, mul, sub
 from typing import Any, Callable
@@ -20,37 +19,27 @@ def get_operation(op: str) -> Callable[[Any, Any], Any]:
 
 
 def main(data: str) -> None:
-    pattern = re.compile(r"\s+([\S]+)")
-    rows = data.splitlines()
-    reversed_rows = [row[::-1] for row in rows]
-
-    value_rows = reversed_rows[:-1]
+    lines = data.splitlines()
+    transposed = ["".join(char) for char in zip(*lines)]
 
     grand_total = 0
-    op_matches_iter = pattern.finditer(reversed_rows[-1])
-    op_matches = list(op_matches_iter)
+    current_numbers = []
+    current_op = None
 
-    for match_index, op_match in enumerate(op_matches):
-        op = op_match.group().strip()
-        op_func = get_operation(op)
+    for col in reversed(transposed):
+        problem_value = col[:-1].strip()
+        operator_char = col[-1].strip()
 
-        start_idx = op_match.start() if match_index == 0 else op_match.start() + 1
-        stop_idx = op_match.end()
+        if not problem_value:
+            continue
 
-        # Group numbers right-to-left
-        rtl_numbers = {}
-        for raw_num in value_rows:
-            num_str = raw_num[start_idx:stop_idx]
-            nums = dict(enumerate(num_str))
-            for k, v in nums.items():
-                if v.strip():
-                    rtl_numbers.setdefault(k, []).append(v)
-        rtl_int = [int("".join(n)) for n in rtl_numbers.values()]
-
-        op_total = reduce(op_func, rtl_int)
-
-        print(f"Total for operation '{op}': {op_total}")
-        grand_total += op_total
+        if operator_char == "":
+            current_numbers.append(int(problem_value))
+        else:
+            current_numbers.append(int(problem_value))
+            current_op = get_operation(operator_char)
+            grand_total += reduce(current_op, current_numbers)
+            current_numbers = []
 
     answer = grand_total
     print("Answer: ", answer)
